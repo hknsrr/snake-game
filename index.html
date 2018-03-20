@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    
+</head>
+
+<style>
+*{
+    font-size: 22px;
+    font-weight: bold;
+}
+.prey{
+    width: 15px !important;
+    height: 15px !important;
+    background:brown;
+    position: absolute;
+    /* left: 300px; */
+    /* top: 210px; */
+    left: 105px;
+    top: 0px;
+}
+#score{
+    position: fixed;
+    top: 0;
+    right: 15px;
+    z-index: 999999999;
+    color: green;
+}
+.center{
+    position: fixed;
+    top:45%;
+    z-index: 99;
+    width: 100%;
+    text-align: center;
+    
+}
+.animate{
+    animation: opacityAnimate 3s infinite;
+}
+@keyframes opacityAnimate {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+</style>
+
+<body>
+
+    <div class="prey"></div>
+
+    <div id="score">
+        Score: <span id="point">0</span>
+    </div>
+
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="snake.js"></script>
+</body>
+
+</html>
