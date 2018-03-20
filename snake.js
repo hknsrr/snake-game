@@ -57,7 +57,6 @@
 
 	});
 
-
 	var getNextPosition = function (elem) {
 
 		var position = {};
@@ -66,41 +65,8 @@
 		direction.horizontal && (position.left = Number(jQuery(elem).css('left').replace('px', '')) + (direction.horizontal * 15));
 		direction.vertical && (position.top = Number(jQuery(elem).css('top').replace('px', '')) + (direction.vertical * 15));
 
-		position.top && ((position.top > jQuery(window).height() && (position.top = 0)) || (position.top < 0 && (position.top = jQuery(window).height())));
-		position.left && ((position.left > jQuery(window).width() && (position.left = 0)) || (position.left < 0 && (position.left = jQuery(window).width())));
-
-		var prey = jQuery('.prey');
-		var preyPosition = prey.position();
-
-		var sneak = jQuery('.snakeBody:first');
-		var sneakPosition = sneak.position();
-
-		if (sneakPosition.left == preyPosition.left && sneakPosition.top == preyPosition.top) { // prey contacted
-
-			prevPosition(prey);
-
-			var lastItemLeft = jQuery('.snakeBody').last().offset().left;
-			var lastItemTop = jQuery('.snakeBody').last().offset().top;
-
-			jQuery('body').append('<div class="snakeBody" style="top:' + lastItemTop + 'px; left:' + lastItemLeft + 'px"></div>');
-
-			score = score + 2;
-			jQuery('#score').text('Score: ' + score);
-
-		} else if (sneakPosition.left + 15 > docWidth || sneakPosition.top + 15 > docHeight) {
-
-			gameOver();
-		}
-
-		jQuery('.snakeBody').each(function (key) {  // check the snake hit the its tail
-			if (key != 0) {
-				var tailLeft = jQuery(this).offset().left;
-				var tailTop = jQuery(this).offset().top;
-
-				if (sneakPosition.left == tailLeft && sneakPosition.top == tailTop)
-					gameOver();
-			}
-		})
+		// position.top && ((position.top > jQuery(window).height() && (position.top = 0)) || (position.top < 0 && (position.top = jQuery(window).height())));  // loop on document area
+		// position.left && ((position.left > jQuery(window).width() && (position.left = 0)) || (position.left < 0 && (position.left = jQuery(window).width()))); // loop on document area
 
 		return position;
 	};
@@ -146,13 +112,46 @@
 				top: Number(jQuery(this).css('top').replace('px', '')),
 				left: Number(jQuery(this).css('left').replace('px', ''))
 			};
+
+			var prey = jQuery('.prey');
+			var preyPosition = prey.position();
+
+			var sneak = jQuery('.snakeBody:first');
+			var sneakPosition = sneak.position();
+
+			if (sneakPosition.left == preyPosition.left && sneakPosition.top == preyPosition.top) { // prey contacted
+
+				prevPosition(prey);
+
+				var lastItemLeft = jQuery('.snakeBody').last().offset().left;
+				var lastItemTop = jQuery('.snakeBody').last().offset().top;
+
+				jQuery('body').append('<div class="snakeBody" style="top:' + lastItemTop + 'px; left:' + lastItemLeft + 'px"></div>');
+
+				score = score + 2;
+				jQuery('#score').text('Score: ' + score);
+
+			} else if (sneakPosition.left > docWidth || sneakPosition.left < 0 || sneakPosition.top > docHeight || sneakPosition.top < 0) {
+				gameOver();
+			} 
+
+			jQuery('.snakeBody').each(function (key) {  // check the snake hit the its tail
+				if (key != 0) {
+					var tailLeft = jQuery(this).offset().left;
+					var tailTop = jQuery(this).offset().top;
+
+					if (sneakPosition.left == tailLeft && sneakPosition.top == tailTop)
+						gameOver();
+				}
+			})
+
 			if (key == 0)
-				jQuery(this).css(getNextPosition(jQuery(this)));
+				jQuery(this).css(getNextPosition(jQuery(this))); // head of snake stepped
 			else
-				jQuery(this).css(positionList[key - 1]);
+				jQuery(this).css(positionList[key - 1]); // The tails followed the head of snake
 		});
 
-	}, 100); // speed
+	}, 50); // speed
 
 	var scoreInterval = setInterval(function () { // 1 score increment every 10 seconds
 
@@ -165,6 +164,7 @@
 
 	// initialize
 	var i = 0;
+	localStorage.clear();
 	while (i < 3) {
 		jQuery('body').append(snakeBody.clone().css(positionList[i] || { left: i + 'px' }));
 
